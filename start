@@ -1,0 +1,17 @@
+#!/bin/bash
+/usr/share/elasticsearch/bin/elasticsearch -p /var/run/elasticsearch/elasticsearch.pid \
+    -Des.default.path.home=/usr/share/elasticsearch \
+    -Des.default.path.logs=/var/log/elasticsearch \
+    -Des.default.path.work=/tmp/elasticsearch \
+	-Des.discovery.type=ec2 \
+	-Des.plugin.mandatory=cloud-aws \
+	-Des.cluster.name=$ES_CLUSTER_NAME \
+	-Des.discovery.ec2.groups=$AWS_SECURITY_GROUP \
+	-Des.discovery.ec2.ping_timeout=30s \
+	-Des.cloud.aws.region=$AWS_REGION \
+	-Des.network.publish_host=$(curl http://169.254.169.254/latest/meta-data/local-ipv4) \
+	-Des.discovery.zen.ping.multicast.enabled=false \
+	-Des.default.path.conf=/etc/elasticsearch &
+	
+sleep 60
+/opt/kibana/bin/kibana
